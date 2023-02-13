@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠키 팝업</title>
+  <style>
+    .popup {
+      position: fixed;
+      display: block;
+      left: 10px;
+      top: 100px;
+      border: 5px solid red;
+      background-color: aliceblue;
+      padding: 20px 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>팝업 예제</h1>
+  <div class="popup">
+    <h2>팝업 박스</h2>
+    <input type="checkbox" id="popup">
+    <label for="popup">하루동안 안보기</label>
+    <button class="close">닫기</button>
+  </div>
+  <script>
+    let myPopup = document.querySelector(".popup"),
+      checkbox = document.getElementById("popup"),
+      popupClose = document.querySelector(".close");
+
+    //쿠키 생성
+    function setCookie(name, value, day) {
+      let date = new Date(); //현재 날짜 지정.
+      date.setDate(date.getDate() + day);
+
+      let myCookie = "";
+      myCookie += name + "=" + value + ";";
+      myCookie += "Expires =" + date.toUTCString();
+
+      document.cookie = myCookie;
+    }
+
+    // 쿠키 삭제
+    function delCookie(name) {
+      let date = new Date();
+
+      date.setDate(date.getDate() - 1);
+
+      let setCookie = "";
+      setCookie += name + " = popup;";
+      setCookie += "Expires =" + date.toUTCString();
+
+      document.cookie = setCookie;
+    };
+
+    // 쿠키 검사
+    function checkCookie(name) {
+      let cookies = document.cookie.split(';');
+      console.log(cookies);
+      let visited = false; //방문 여부 확인
+
+      for (let i in cookies) {
+        if (cookies[i].indexOf(name) > -1) {
+          visited = true;
+          
+        };
+      };
+
+      console.log(visited);
+      if (visited) {
+        // 재방문
+        myPopup.style.display = 'none';
+      } else {
+        // 신규 방문
+        myPopup.style.display = 'block';
+      };
+
+    };
+    checkCookie("topPopup");
+
+    popupClose.addEventListener('click', () => {
+      // checkbox 여부
+      if (checkbox.checked) {
+        // 팝업을 다시 안보겠다. 팝업 닫고, 쿠키 생성
+        setCookie('topPopup', 'popup', 1);
+        myPopup.style.display = 'none';
+      } else {
+        // 팝업을 계속 본다. 팝업 닫고, 쿠키 제거
+        myPopup.style.display = 'none';
+        delCookie('topPopup')
+      }
+    });
+
+  </script>
+</body>
+
+</html>
